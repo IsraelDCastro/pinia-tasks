@@ -27,30 +27,23 @@
         <TaskDetails :task="task" />
       </div>
     </div>
-    <button @click="taskStore.$reset()">Reset state</button>
+
   </main>
 </template>
 
-<script>
+<script setup>
   import { storeToRefs } from "pinia";
-  import { useTaskStore } from "./stores/TaskStore";
-  import { ref } from "vue";
+  import { onMounted, ref } from "vue";
 
+  import { useTaskStore } from "./stores/TaskStore";
   import TaskDetails from "./components/TaskDetails.vue";
   import TaskForm from "./components/TaskForm.vue";
 
-  export default {
-    components: { TaskForm, TaskDetails },
-    setup () {
-      const taskStore = useTaskStore();
+  const taskStore = useTaskStore();
+  const { tasks, loading, favTasks, favTasksCount, totalCount, getTasks } = storeToRefs(taskStore);
+  const filter = ref('all');
 
-      const { tasks, loading, favTasks, favTasksCount, totalCount } = storeToRefs(taskStore);
-
-      taskStore.getTasks();
-
-      const filter = ref('all');
-
-      return { taskStore, filter, tasks, loading, favTasks, favTasksCount, totalCount }
-    }
-  }
+  onMounted(() => {
+    taskStore.getTasks();
+  });
 </script>
